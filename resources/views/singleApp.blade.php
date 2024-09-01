@@ -9,7 +9,7 @@
     />
     <link
       rel="icon"
-      href="assets/img/kaiadmin/favicon.ico"
+      href="{{asset('assets/img/kaiadmin/favicon.ico')}}"
       type="image/x-icon"
     />
 
@@ -25,7 +25,7 @@
             "Font Awesome 5 Brands",
             "simple-line-icons",
           ],
-          urls: ["assets/css/fonts.min.css"],
+          urls: ["{{asset('assets/css/fonts.min.css')}}"],
         },
         active: function () {
           sessionStorage.fonts = true;
@@ -39,13 +39,27 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css')}}" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{ asset('assets/css/demo.cs')}}s" />
+    <link rel="stylesheet" href="{{ asset('assets/css/demo.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   </head>
   <body>
-    <div id="app">
+
+
+
+
+    <div id="app" >
       <App/>
   </div>
+
+
+
     <!--   Core JS Files   -->
+    <script>window.baseUrl = '{{url('/')}}';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script src="{{asset('js/app.js')}}"></script>
     <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js')}}"></script>
     <script src="{{ asset('assets/js/core/popper.min.js')}}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js')}}"></script>

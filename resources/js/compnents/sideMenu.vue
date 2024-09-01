@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar" data-background-color="dark">
+    <div class="sidebar" data-background-color="dark" >
         <div class="sidebar-logo">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
@@ -183,6 +183,28 @@
                                     <a href="tables/datatables.html">
                                         <span class="sub-item">Datatables</span>
                                     </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#tables2">
+                            <i class="fas fa-tags"></i>
+                            <p>Category</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="tables2">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <router-link class="nav-link " to="/admin/product/category">Category</router-link>
+
+                                </li>
+                                <li>
+                                    <router-link class="nav-link" to="/admin/product/sub_category">SubCategory</router-link>
+                                </li>
+                                <li>
+                                    <router-link class="nav-link" to="/admin/product/product">Product</router-link>
+
                                 </li>
                             </ul>
                         </div>
