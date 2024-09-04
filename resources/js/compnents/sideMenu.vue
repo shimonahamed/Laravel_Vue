@@ -196,14 +196,15 @@
                         <div class="collapse" id="tables2">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <router-link class="nav-link " to="/admin/product/category">Category</router-link>
+                                    <router-link class="nav-link " to="/admin/product/category"><i class="fas fa-th-list"></i>Category</router-link>
 
                                 </li>
                                 <li>
-                                    <router-link class="nav-link" to="/admin/product/sub_category">SubCategory</router-link>
+                                    <router-link class="nav-link" to="/admin/product/sub_category">
+                                        <i class="fas fa-cogs"></i>SubCategory</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="nav-link" to="/admin/product/product">Product</router-link>
+                                    <router-link class="nav-link" to="/admin/product/product"><i class="fas fa-cube"></i> Product</router-link>
 
                                 </li>
                             </ul>

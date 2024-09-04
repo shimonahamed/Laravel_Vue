@@ -1,5 +1,6 @@
 import Home from "../views/Home.vue";
 import About from "../views/About.vue";
+
 import categoryCompnent from "../views/Product/categoryCompnent";
 import subcategoryCompnent from "../views/Product/subcategoryCompnent";
 

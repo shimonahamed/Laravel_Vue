@@ -2,18 +2,18 @@
 
     <div class="modal fade" :id="modalId" >
         <div class="modal-dialog">
-            <from @submit.prevent="submitForm(formData)">
+            <from @submit.prevent="submit()">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" @click="closeModal(modalId)" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <slot></slot>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" @click="closeModal(modalId)">Close</button>
                     <button @click="submitFromData" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
@@ -30,13 +30,15 @@
                 type : [String],
                 default:'myModal'
             },
-            formData : {
-                type : [Object, Array],
-                default(){
-                    return {}
-                }
+
+
+        },
+        methods : {
+            submit : function (){
+                this.$emit('submit');
             }
         }
+
 
     }
 </script>

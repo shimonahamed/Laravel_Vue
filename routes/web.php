@@ -2,8 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('admin/{any}', 'singleApp')->where('any', '.*');
+Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'doLogin']);
+
+
+
+Route::view('admin/{any}', 'singleApp')->where('any', '.*')->middleware('auth');
+
+
 Route::prefix('api')->group(function () {
+    Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
     Route::resource('categories', \App\Http\Controllers\CategoryController::class);
     Route::resource('subcategories', \App\Http\Controllers\SubCategoryController::class);
+
 });

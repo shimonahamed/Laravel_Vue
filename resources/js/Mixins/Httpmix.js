@@ -1,76 +1,79 @@
 import axios from "axios";
+import {Validator} from "vee-validate";
 import { Toast } from 'vue-toastification';
 
 export default {
     data(){
         return{
-            dataList:{},
-            formData:{}
 
         }
 
     },
+
+
+
     methods:{
         getDataList : function (){
             const _this = this;
-            axios.get(`${baseUrl}/${this.$route.meta.dataUrl}`)
+            axios.get(_this.urlGenaretor())
                 .then(function (response){
-                    _this.dataList = response.data.result;
+
+                   _this.$store.commit('dataList', response.data.result)
                 });
         },
-        submitFromData() {
-            const _this = this;
-            if (_this.formData.id) {
-                axios.put(`${baseUrl}/${this.$route.meta.dataUrl}/${_this.formData.id}`, _this.formData)
-                    .then(function (response) {
-                        _this.getDataList();
-                        _this.$toast.success('Data updated successfully!');
-                        _this.openModal('myModal', 'hide');
-                    })
-                    .catch(function (error) {
-                        console.error('Error updating category:', error);
-                        _this.$toast.error('Data updated Unsuccessfully!');
 
 
-                    });
-            } else {
-                axios.post(`${baseUrl}/${this.$route.meta.dataUrl}`, _this.formData)
-                    .then(function (response) {
-                        _this.getDataList();
-                        _this.$toast.success('Data Create successfully!');
 
-                        _this.openModal('myModal', 'hide');
-
-                    })
-                    .catch(function (error) {
-                        console.error('Error adding category:', error);
-                        _this.$toast.error('Data Create Unsuccessfully!');
-
-
-                    });
-            }
+        openEditModal(data) {
+            this.fromData = { ...data };
+            this.openModal('myModal', 'show');
         },
-        Categorydelete(data) {
+
+
+
+        submitFromData:function(fromData = {}, optParms = {}, callback ) {
+            const _this = this;
+            _this.$validator.validateAll().then(valid => {
+                if (valid) {
+                    axios.post(_this.urlGenaretor(), fromData)
+                        .then(function (res){
+                            if (parseInt(res.data.status) === 2000){
+                                if (optParms.modalForm === undefined ){
+                                    _this.closeModal();
+                                }
+                                if (optParms.reloadList === undefined){
+                                    _this.getDataList();
+                                }
+                                if (typeof callback === 'function'){
+                                    callback(res.data.result);
+                                }
+                            }else if(parseInt(res.data.status) === 3000){
+                                console.log(res.data.result);
+                            }else{
+                                console.log('toster');
+                            }
+                        });
+                }
+            });
+
+        },
+
+
+        CategoryDatadelete(data) {
             const _this = this;
             axios.delete(`${baseUrl}/${this.$route.meta.dataUrl}/${data.id}`)
+
                 .then(response => {
                     _this.getDataList();
                     _this.$toast.success('Data Delete successfully!');
-
                 })
                 .catch(error => {
                     console.error('Error deleting category:', error);
                     _this.$toast.error('Data Delete Unsuccessfully!');
 
-
                 });
         }
 
     },
-        openEditModal(data) {
-            this.formData = { ...data };
-            this.openModal('myModal', 'show');
-        },
-
 
 }
