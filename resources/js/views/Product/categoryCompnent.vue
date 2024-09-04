@@ -11,7 +11,7 @@
                     <td>{{data.name}}</td>
                     <td>
                         <a @click="openEditModal(data)"><i class="fas fa-edit"></i></a>
-                        <a @click="Categorydelete(data)"><i class="fas fa-trash-alt"></i></a>
+                        <a @click="CategoryDatadelete(data)"><i class="fas fa-trash-alt"></i></a>
                     </td>
 
                 </tr>
@@ -19,11 +19,13 @@
             </data-table>
 
     </div>
-        <data-modal :form-data="formData">
+        <data-modal @submit="submitFromData()">
             <div class="row">
                 <div class="col-md-12">
                     <label>Category Name</label>
-                    <input v-model="formData.name" class="form-control" type="text">
+                    <input v-validate="'required'"  v-model="fromData.name" class="form-control" type="text" >
+                    <span>{{ errors.first('name') }}</span>
+
                 </div>
             </div>
         </data-modal>
@@ -41,11 +43,13 @@
         data(){
             return {
                 tableHeading : ['Sl', 'name', 'Action'],
+                fromData: { name: '' }
 
             }
         },
         mounted() {
             this.getDataList();
+            this.$set(this.fromData,'name','')
         }
 
 

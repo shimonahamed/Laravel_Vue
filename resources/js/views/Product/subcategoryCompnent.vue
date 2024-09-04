@@ -10,27 +10,29 @@
 
                     <td>{{index+1}}</td>
                     <td>{{data.name}}</td>
-                    <td>Category</td>
+                    <td>{{data.categoryId}}</td>
                     <td>
                         <a @click="openEditModal(data)"><i class="fas fa-edit"></i></a>
-                        <a><i class="fas fa-trash-alt"></i></a>
+                        <a @click="CategoryDatadelete(data)"><i class="fas fa-trash-alt"></i></a>
                     </td>
                 </tr>
 
             </data-table>
 
     </div>
-        <data-modal :form-data="formData">
+        <data-modal :from-data="fromData">
             <div class="row">
                 <div class="col-md-12">
                     <label> Name</label>
-                    <input v-model="formData.name" class="form-control" type="text">
+                    <input v-model="fromData.name" class="form-control" type="text">
                 </div>
                 <div class="col-md-12">
                     <label> Category</label>
-                    <select v-model="formData.categoy" class="form-control">
-                        <option>Select</option>
-                        <option></option>
+                    <select v-model="fromData.categoryId" class="form-control">
+                        <option value="">Select</option>
+                        <option v-for="category in categories" :key="category.id" :value="category.id">
+                            {{ category.name }}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -47,14 +49,26 @@
         components: {DataModal, DataTable, PageTop},
         data(){
             return{
-                tableHeading:['SL' ,'Name','Category','Action']
+                tableHeading:['SL' ,'Name','Category','Action'],
+                categories: {},
+                fromData: {id:null, name: '', categoryId: null },
+
+
             }
+
         },
         mounted() {
             this.getDataList();
+
+        },
+        methods:{
+
+
         }
+
+
     }
-</script>
+  </script>
 
 <style scoped>
 

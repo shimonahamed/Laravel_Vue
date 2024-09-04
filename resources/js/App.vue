@@ -20,7 +20,10 @@ import topMenu from "./compnents/topMenu.vue";
 export default {
     name: "App",
     components: { Footer, sideMenu, topMenu },
-    mounted() {},
+
+    mounted() {
+
+    },
 };
 </script>
 <style scoped></style>

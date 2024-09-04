@@ -3,7 +3,7 @@
     <div class="main-header-logo">
       <!-- Logo Header -->
       <div class="logo-header" data-background-color="dark">
-        <a href="index.html" class="logo">
+        <a href="" class="logo">
           <img
                   src="assets/img/kaiadmin/logo_light.svg"
                   alt="navbar brand"
@@ -366,7 +366,7 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#">Account Setting</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Logout</a>
+                  <a class="dropdown-item" href="#" @click.prevent="logout">Logout</a>
                 </li>
               </div>
             </ul>
@@ -378,9 +378,21 @@
   </div>
 </template>
 <script>
+  import axios from 'axios';
 export default {
     name: "topMenu",
-    mounted() {},
+
+  methods:{
+      async logout(){
+        try {
+          await axios.post('/api/logout');
+          window.location.href = '/login';
+
+        } catch (error) {
+          console.error('Logout Failed:', error);
+        }
+      }
+  }
 };
 </script>
 <style scoped></style>

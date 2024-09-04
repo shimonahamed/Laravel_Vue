@@ -28,6 +28,8 @@
         "laravel-mix": "^6.0.49",
         "mix": "^0.0.1",
         "vue-axios": "^3.5.2",
-        "vue-toastification": "^1.7.14"
+        "vue-toastification": "^1.7.14",
+        "vuex": "^3.6.2",
+        "vee-validate": "^2.2.15"
     }
 }
