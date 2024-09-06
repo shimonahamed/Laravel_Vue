@@ -29,9 +29,9 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator=$this->model->validator($request->all());
-        dd($request->all());
+      
 
-        if ($validator->fills()){
+        if ($validator->fails()){
             return response()->json(['result' => $validator->errors(), 'status' => 3000], 200);
         }
         $this->model->fill($request->all());
