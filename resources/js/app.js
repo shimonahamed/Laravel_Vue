@@ -19,14 +19,14 @@ import Vuex from 'vuex';
 Vue.use(Vuex)
 
 import {store as storeData} from './store';
-const store = new Vuex.Store(storeData)
+const store = new Vuex.Store(storeData);
 
 
 import VeeValidate from 'vee-validate'
 Vue.use(VeeValidate, {
     events : 'input',
     fieldsBagName : ''
-})
+});
 
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';

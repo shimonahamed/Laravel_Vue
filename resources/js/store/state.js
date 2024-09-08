@@ -1,4 +1,4 @@
-export const state={
-    dataList:{},
-    fromData:{}
-}
+export const state= {
+    dataList: {},
+    fromData: {}
+};

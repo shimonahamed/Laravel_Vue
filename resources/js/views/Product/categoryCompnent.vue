@@ -29,8 +29,10 @@
                         class="form-control"
                         name="name"
                         type="text"
+                        :class="{'is-invalid': errors.has('name')}"
                     />
-                    <span>{{ errors.first("name") }}</span>
+                    <span v-if="errors.has('name')" class="text-danger">{{ errors.first('name') }}</span>
+<!--                    <span>{{ errors.first("name") }}</span>-->
                 </div>
             </div>
         </data-modal>
@@ -48,12 +50,16 @@ export default {
     data() {
         return {
             tableHeading: ["Sl", "name", "Action"],
+
         };
     },
     mounted() {
         this.getDataList();
         this.$set(this.fromData, "name", "");
     },
+    computed:{
+
+    }
 };
 </script>
 

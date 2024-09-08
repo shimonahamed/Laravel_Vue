@@ -7,13 +7,15 @@ export default {
         }
     },
     methods : {
-        openModal : function (modalId = 'myModal', fromData ={}){
+        openModal : function (modalId = 'myModal',fromData=this.$store.getters.fromData){
             const _this = this;
             $(`#${modalId}`).modal('show');
-            _this.$store.commit('fromData', {});
+            _this.$store.commit('fromData', fromData);
+
+
         },
         closeModal : function (modalId = 'myModal', fromData={}){
-            const _this=this
+            const _this=this;
             $(`#${modalId}`).modal('hide');
             _this.$store.commit('fromData',{})
         },
@@ -24,6 +26,15 @@ export default {
 
             }
             return `${baseUrl}/${_this.$route.meta.dataUrl}`
+
+        },
+        openEditModal(category) {
+
+            let cat = Object.assign({}, category);
+            this.$store.commit('fromData', cat);
+
+            this.openModal('myModal', this.$store.getters.fromData);
+
 
         },
 
@@ -47,7 +58,7 @@ export default {
 
     computed :{
         fromData(){
-            return this.$store.state.fromData;
+            return this.$store.getters.fromData;
         },
         dataList(){
             return this.$store.state.dataList;

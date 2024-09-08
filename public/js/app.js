@@ -251,7 +251,8 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.getDataList();
     this.$set(this.fromData, "name", "");
-  }
+  },
+  computed: {}
 });
 
 /***/ }),
@@ -2393,6 +2394,9 @@ var render = function render() {
       expression: "fromData.name"
     }],
     staticClass: "form-control",
+    "class": {
+      "is-invalid": _vm.errors.has("name")
+    },
     attrs: {
       name: "name",
       type: "text"
@@ -2406,7 +2410,9 @@ var render = function render() {
         _vm.$set(_vm.fromData, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm.errors.first("name")))])])])])], 1);
+  }), _vm._v(" "), _vm.errors.has("name") ? _c("span", {
+    staticClass: "text-danger"
+  }, [_vm._v(_vm._s(_vm.errors.first("name")))]) : _vm._e()])])])], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2544,10 +2550,10 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     openModal: function openModal() {
       var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'myModal';
-      var fromData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var fromData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.$store.getters.fromData;
       var _this = this;
       $("#".concat(modalId)).modal('show');
-      _this.$store.commit('fromData', {});
+      _this.$store.commit('fromData', fromData);
     },
     closeModal: function closeModal() {
       var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'myModal';
@@ -2564,6 +2570,11 @@ __webpack_require__.r(__webpack_exports__);
       }
       return "".concat(baseUrl, "/").concat(_this.$route.meta.dataUrl);
     },
+    openEditModal: function openEditModal(category) {
+      var cat = Object.assign({}, category);
+      this.$store.commit('fromData', cat);
+      this.openModal('myModal', this.$store.getters.fromData);
+    },
     DeleteToster: function DeleteToster() {
       Swal.fire({
         title: 'Are you sure?',
@@ -2579,7 +2590,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     fromData: function fromData() {
-      return this.$store.state.fromData;
+      return this.$store.getters.fromData;
     },
     dataList: function dataList() {
       return this.$store.state.dataList;
@@ -2603,12 +2614,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
 /* harmony import */ var vue_toastification__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-toastification */ "./node_modules/vue-toastification/dist/esm/index.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
-    return {};
+    return {
+      formData: {}
+    };
   },
   methods: {
     getDataList: function getDataList() {
@@ -2617,10 +2636,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.$store.commit("dataList", response.data.result);
       });
     },
-    openEditModal: function openEditModal(data) {
-      this.$store.commit("fromData", data.result);
-      this.openModal("myModal", "show");
-    },
     submitFromData: function submitFromData() {
       var fromData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var optParms = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -2628,25 +2643,56 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
       _this.$validator.validateAll().then(function (valid) {
         if (valid) {
-          axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(_this.urlGenaretor(), fromData).then(function (res) {
-            if (parseInt(res.data.status) === 2000) {
-              if (optParms.modalForm === undefined) {
-                _this.closeModal();
+          if (_this.fromData.id) {
+            axios__WEBPACK_IMPORTED_MODULE_2__["default"].put("".concat(_this.urlGenaretor(), "/").concat(_this.fromData.id), _this.fromData).then(function (response) {
+              _this.getDataList();
+              _this.closeModal();
+              _this.$toast.success("Data Update successfully!");
+            })["catch"](function (error) {
+              console.error('Error updating category:', error);
+              _this.$toast.error("Data Updateing Unsuccessfully!");
+            });
+          } else {
+            axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(_this.urlGenaretor(), fromData).then(function (res) {
+              if (parseInt(res.data.status) === 2000) {
+                if (optParms.modalForm === undefined) {
+                  _this.closeModal();
+                }
+                if (optParms.reloadList === undefined) {
+                  _this.getDataList();
+                }
+                if (typeof callback === "function") {
+                  callback(res.data.result);
+                }
+                _this.$toast.success("Data Added successfully!");
+              } else if (parseInt(res.data.status) === 3000) {
+                console.log(res.data.result);
+              } else {
+                console.log("Unexpected status code");
               }
-              if (optParms.reloadList === undefined) {
-                _this.getDataList();
+            })["catch"](function (error) {
+              _this.$validator.errors.clear();
+
+              // Add backend errors to VeeValidate error bag
+              if (error.response && error.response.data.errors) {
+                Object.entries(error.response.data.errors).forEach(function (_ref) {
+                  var _ref2 = _slicedToArray(_ref, 2),
+                    name = _ref2[0],
+                    messages = _ref2[1];
+                  messages.forEach(function (message) {
+                    _this.$validator.errors.add({
+                      name: 0
+                    });
+                  });
+                });
               }
-              if (typeof callback === "function") {
-                callback(res.data.result);
-              }
-              _this.$toast.success("Data Added successfully!");
-            } else if (parseInt(res.data.status) === 3000) {
-              console.log(res.data.result);
-            } else {
-              console.log("toster");
-            }
-          });
+              _this.$toast.error('Validation Failed');
+            });
+          }
         }
+      })["catch"](function (error) {
+        console.error('Validation failed:', error);
+        _this.$toast.error('Validation Failed');
       });
     },
     CategoryDatadelete: function CategoryDatadelete(data) {
