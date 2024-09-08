@@ -14,7 +14,7 @@ class Category extends Model
 
     public function validator($input){
         return Validator::make($input,[
-            'name'=>'required '
+            'name'=>'required | email'
             ]);
     }
 }

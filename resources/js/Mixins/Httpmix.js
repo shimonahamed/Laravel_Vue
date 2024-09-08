@@ -1,12 +1,20 @@
 import axios from "axios";
-import { Validator } from "vee-validate";
+// import { Validator } from "vee-validate";
+import { extend, validateAll, required } from 'vee-validate';
 import { Toast } from "vue-toastification";
+extend('required', required);
+
 
 export default {
     data() {
         return {
             formData: {},
         };
+    },
+    watch: {
+        'fromData.name': function (newVal) {
+            this.validateField('name');
+        }
     },
 
     methods: {
@@ -17,7 +25,13 @@ export default {
             });
         },
 
-        submitFromData: function (fromData = {}, optParms = {}, callback) {
+            validateField(field) {
+                this.$validator.validate(field, this.fromData[field]);
+            },
+
+
+
+            submitFromData: function (fromData = {}, optParms = {}, callback) {
             const _this = this;
 
 
@@ -61,21 +75,19 @@ export default {
                                     console.log("Unexpected status code");
                                 }
                             })
-                            .catch(function (error) {
-                                _this.$validator.errors.clear();
-
-                                // Add backend errors to VeeValidate error bag
+                            .catch(error => {
+                                this.$validator.errors.clear();
                                 if (error.response && error.response.data.errors) {
                                     Object.entries(error.response.data.errors).forEach(([name, messages]) => {
                                         messages.forEach(message => {
-                                            _this.$validator.errors.add({
-                                                name: 0,
+                                            this.$validator.errors.add({
+                                                name: name,
+                                                message: message
                                             });
                                         });
                                     });
                                 }
-
-                                _this.$toast.error('Validation Failed');
+                                this.$toast.error('Validation Failed');
                             });
                     }
                 }

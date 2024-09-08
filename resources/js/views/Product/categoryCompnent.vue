@@ -23,17 +23,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <label>Category Name</label>
+
                     <input
                         v-validate="'required'"
                         v-model="fromData.name"
                         class="form-control"
                         name="name"
                         type="text"
-                        :class="{'is-invalid': errors.has('name')}"
                     />
-                    <span v-if="errors.has('name')" class="text-danger">{{ errors.first('name') }}</span>
-<!--                    <span>{{ errors.first("name") }}</span>-->
-                </div>
+             </div>
             </div>
         </data-modal>
     </div>
