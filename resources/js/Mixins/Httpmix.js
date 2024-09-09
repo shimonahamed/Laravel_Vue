@@ -1,21 +1,20 @@
 import axios from "axios";
-// import { Validator } from "vee-validate";
+import { Validator } from "vee-validate";
 import { extend, validateAll, required } from 'vee-validate';
 import { Toast } from "vue-toastification";
-extend('required', required);
 
 
 export default {
     data() {
         return {
-            formData: {},
+
         };
     },
-    watch: {
-        'fromData.name': function (newVal) {
-            this.validateField('name');
-        }
-    },
+    // watch: {
+    //     'fromData.name': function (newVal) {
+    //         this.validateField('name');
+    //     }
+    // },
 
     methods: {
         getDataList: function () {
@@ -38,8 +37,6 @@ export default {
             _this.$validator.validateAll().then((valid) => {
 
                 if (valid) {
-
-
 
                     if (_this.fromData.id) {
 
@@ -75,19 +72,8 @@ export default {
                                     console.log("Unexpected status code");
                                 }
                             })
-                            .catch(error => {
-                                this.$validator.errors.clear();
-                                if (error.response && error.response.data.errors) {
-                                    Object.entries(error.response.data.errors).forEach(([name, messages]) => {
-                                        messages.forEach(message => {
-                                            this.$validator.errors.add({
-                                                name: name,
-                                                message: message
-                                            });
-                                        });
-                                    });
-                                }
-                                this.$toast.error('Validation Failed');
+                            .catch(function (error) {
+                                _this.handleValidationError(error);
                             });
                     }
                 }
@@ -96,21 +82,36 @@ export default {
                 _this.$toast.error('Validation Failed');
             });
         },
-
+        handleValidationError: function (error) {
+            if (error.response && error.response.data.result) {
+                const errors = error.response.data.result;
+                console.log(errors);
+                Object.keys(errors).forEach(key => {
+                    errors[key].forEach(message => {
+                        this.$validator.errors.add({ field: key, msg: message });
+                    });
+                });
+                this.$toast.error('Validation Failed');
+            } else {
+                console.error('Error:', error);
+                this.$toast.error('An unexpected error occurred.');
+            }
+            },
 
         CategoryDatadelete(data) {
             const _this = this;
-            axios
-                .delete(`${baseUrl}/${this.$route.meta.dataUrl}/${data.id}`)
 
-                .then((response) => {
-                    _this.getDataList();
-                    _this.$toast.success("Data Delete successfully!");
-                })
-                .catch((error) => {
-                    console.error("Error deleting category:", error);
-                    _this.$toast.error("Data Delete Unsuccessfully!");
-                });
+                axios.delete(`${_this.urlGenaretor()}/${data.id}`)
+
+                    .then((response) => {
+                        _this.getDataList();
+                        _this.$toast.success("Data Delete successfully!");
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting category:", error);
+                        _this.$toast.error("Data Delete Unsuccessfully!");
+                    });
+
         },
     },
 };

@@ -271,6 +271,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _compnents_pageTop__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../compnents/pageTop */ "./resources/js/compnents/pageTop.vue");
 /* harmony import */ var _compnents_dataTable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../compnents/dataTable */ "./resources/js/compnents/dataTable.vue");
 /* harmony import */ var _compnents_dataModal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../compnents/dataModal */ "./resources/js/compnents/dataModal.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+
 
 
 
@@ -283,13 +285,28 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      tableHeading: ["SL", "Name", "Category", "Action"]
+      tableHeading: ["SL", "Name", "Category", "Action"],
+      categories: []
     };
   },
   mounted: function mounted() {
     this.getDataList();
+    this.getCategories();
   },
-  methods: {}
+  methods: {
+    getCategoryName: function getCategoryName(category_id) {
+      var category = this.categories.find(function (cat) {
+        return cat.id === category_id;
+      });
+      return category ? category.name : '';
+    },
+    getCategories: function getCategories() {
+      var _this = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get('/api/categories').then(function (response) {
+        _this.categories = response.data.result;
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -2394,9 +2411,6 @@ var render = function render() {
       expression: "fromData.name"
     }],
     staticClass: "form-control",
-    "class": {
-      "is-invalid": _vm.errors.has("name")
-    },
     attrs: {
       name: "name",
       type: "text"
@@ -2446,7 +2460,7 @@ var render = function render() {
       tableHeading: _vm.tableHeading
     }
   }, _vm._l(_vm.dataList, function (data, index) {
-    return _c("tr", [_c("td", [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.categoryId))]), _vm._v(" "), _c("td", [_c("a", {
+    return _c("tr", [_c("td", [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.getCategoryName(data.category_id)))]), _vm._v(" "), _c("td", [_c("a", {
       on: {
         click: function click($event) {
           return _vm.openEditModal(data);
@@ -2464,8 +2478,10 @@ var render = function render() {
       staticClass: "fas fa-trash-alt"
     })])])]);
   }), 0)], 1), _vm._v(" "), _c("data-modal", {
-    attrs: {
-      "from-data": _vm.fromData
+    on: {
+      submit: function submit($event) {
+        return _vm.submitFromData(_vm.fromData);
+      }
     }
   }, [_c("div", {
     staticClass: "row"
@@ -2480,7 +2496,8 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      type: "text"
+      type: "text",
+      name: "name"
     },
     domProps: {
       value: _vm.fromData.name
@@ -2491,16 +2508,21 @@ var render = function render() {
         _vm.$set(_vm.fromData, "name", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm.errors.has("name") ? _c("span", {
+    staticClass: "text-danger"
+  }, [_vm._v(_vm._s(_vm.errors.first(_vm.result.name)))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", [_vm._v(" Category")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.fromData.categoryId,
-      expression: "fromData.categoryId"
+      value: _vm.fromData.category_id,
+      expression: "fromData.category_id"
     }],
     staticClass: "form-control",
+    attrs: {
+      name: "category_id"
+    },
     on: {
       change: function change($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
@@ -2509,21 +2531,23 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-        _vm.$set(_vm.fromData, "categoryId", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        _vm.$set(_vm.fromData, "category_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
   }, [_c("option", {
     attrs: {
-      value: ""
+      value: "Select Category"
     }
-  }, [_vm._v("Select")]), _vm._v(" "), _vm._l(_vm.categories, function (category) {
+  }, [_vm._v("Select Category")]), _vm._v(" "), _vm._l(_vm.categories, function (category) {
     return _c("option", {
       key: category.id,
       domProps: {
         value: category.id
       }
     }, [_vm._v("\n                        " + _vm._s(category.name) + "\n                    ")]);
-  })], 2)])])])], 1);
+  })], 2), _vm._v(" "), _vm.errors.has("category_id") ? _c("span", {
+    staticClass: "text-danger"
+  }, [_vm._v(_vm._s(_vm.errors.first("category_id")))]) : _vm._e()])])])], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2550,7 +2574,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     openModal: function openModal() {
       var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'myModal';
-      var fromData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.$store.getters.fromData;
+      var fromData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var _this = this;
       $("#".concat(modalId)).modal('show');
       _this.$store.commit('fromData', fromData);
@@ -2573,7 +2597,7 @@ __webpack_require__.r(__webpack_exports__);
     openEditModal: function openEditModal(category) {
       var cat = Object.assign({}, category);
       this.$store.commit('fromData', cat);
-      this.openModal('myModal', this.$store.getters.fromData);
+      this.openModal('myModal', this.fromData);
     },
     DeleteToster: function DeleteToster() {
       Swal.fire({
@@ -2581,6 +2605,7 @@ __webpack_require__.r(__webpack_exports__);
         text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
+        isConfirmed: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!',
@@ -2590,7 +2615,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     fromData: function fromData() {
-      return this.$store.getters.fromData;
+      return this.$store.state.fromData;
     },
     dataList: function dataList() {
       return this.$store.state.dataList;
@@ -2614,27 +2639,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
 /* harmony import */ var vue_toastification__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-toastification */ "./node_modules/vue-toastification/dist/esm/index.js");
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
-    return {
-      formData: {}
-    };
+    return {};
   },
+  // watch: {
+  //     'fromData.name': function (newVal) {
+  //         this.validateField('name');
+  //     }
+  // },
+
   methods: {
     getDataList: function getDataList() {
       var _this = this;
       axios__WEBPACK_IMPORTED_MODULE_2__["default"].get(_this.urlGenaretor()).then(function (response) {
         _this.$store.commit("dataList", response.data.result);
       });
+    },
+    validateField: function validateField(field) {
+      this.$validator.validate(field, this.fromData[field]);
     },
     submitFromData: function submitFromData() {
       var fromData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -2671,22 +2698,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
                 console.log("Unexpected status code");
               }
             })["catch"](function (error) {
-              _this.$validator.errors.clear();
-
-              // Add backend errors to VeeValidate error bag
-              if (error.response && error.response.data.errors) {
-                Object.entries(error.response.data.errors).forEach(function (_ref) {
-                  var _ref2 = _slicedToArray(_ref, 2),
-                    name = _ref2[0],
-                    messages = _ref2[1];
-                  messages.forEach(function (message) {
-                    _this.$validator.errors.add({
-                      name: 0
-                    });
-                  });
-                });
-              }
-              _this.$toast.error('Validation Failed');
+              _this.handleValidationError(error);
             });
           }
         }
@@ -2695,9 +2707,28 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
         _this.$toast.error('Validation Failed');
       });
     },
+    handleValidationError: function handleValidationError(error) {
+      var _this2 = this;
+      if (error.response && error.response.data.result) {
+        var errors = error.response.data.result;
+        console.log(errors);
+        Object.keys(errors).forEach(function (key) {
+          errors[key].forEach(function (message) {
+            _this2.$validator.errors.add({
+              field: key,
+              msg: message
+            });
+          });
+        });
+        this.$toast.error('Validation Failed');
+      } else {
+        console.error('Error:', error);
+        this.$toast.error('An unexpected error occurred.');
+      }
+    },
     CategoryDatadelete: function CategoryDatadelete(data) {
       var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"]["delete"]("".concat(baseUrl, "/").concat(this.$route.meta.dataUrl, "/").concat(data.id)).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2__["default"]["delete"]("".concat(_this.urlGenaretor(), "/").concat(data.id)).then(function (response) {
         _this.getDataList();
         _this.$toast.success("Data Delete successfully!");
       })["catch"](function (error) {
