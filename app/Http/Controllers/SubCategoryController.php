@@ -8,68 +8,63 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class SubCategoryController extends Controller
+
 {
     public $model='';
     public function  __construct()
     {
-        $this->model=new Category();
+        $this->model=new subCategory();
     }
 
     public function index()
     {
-        $data=subCategory::get();
+        $data=$this->model->get();
         return response()->json(['result'=>$data,'status'=>2000],200);
     }
 
 
     public function create()
     {
-
+        //
     }
-
 
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'category_id' => 'required|exists:categories,id',
+            'name' => 'required ',
         ]);
-
-        if ($validator->fails()) {
+        if ($validator->fails()){
             return response()->json(['result' => $validator->errors(), 'status' => 3000], 200);
         }
-
-        $subCat = new subCategory();
-        $subCat->fill($request->all());
-        $subCat->save();
-
-        return response()->json(['result' => $subCat, 'status' => 2000], 200);
+        $this->model->fill($request->all());
+        $this->model->save();
+        return response()->json(['result' =>  $this->model, 'status' => 2000], 200);
     }
 
 
-    public function show(subCategory $subCategory)
+    public function show(Category $category)
     {
 
     }
 
 
-    public function edit(subCategory $subCategory)
+    public function edit(Category $category)
     {
-        //
+
     }
 
 
     public function update(Request $request)
     {
+
         try {
             $id = $request->input('id');
 
-            $category =subCategory::where('id', $id)->first();
+            $category =$this->model->where('id', $id)->first();
 
             if ($category) {
                 $category->name = $request->input('name');
-                $category->category_id = $request->input('category_id');
                 $category->update();
 
                 return response()->json(['status' => 2000]);
@@ -85,7 +80,7 @@ class SubCategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $category = subCategory::where('id', $id)->first();
+            $category = $this->model->where('id', $id)->first();
 
             if ($category) {
 

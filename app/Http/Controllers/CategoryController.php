@@ -30,7 +30,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required | email',
+            'name' => 'required ',
         ]);
         if ($validator->fails()){
             return response()->json(['result' => $validator->errors(), 'status' => 3000], 200);
@@ -59,7 +59,7 @@ class CategoryController extends Controller
         try {
             $id = $request->input('id');
 
-            $category =Category::where('id', $id)->first();
+            $category =$this->model->where('id', $id)->first();
 
             if ($category) {
                 $category->name = $request->input('name');
@@ -78,7 +78,7 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $category = Category::where('id', $id)->first();
+            $category = $this->model->where('id', $id)->first();
 
             if ($category) {
 

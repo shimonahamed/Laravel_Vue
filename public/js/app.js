@@ -2424,9 +2424,7 @@ var render = function render() {
         _vm.$set(_vm.fromData, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _vm.errors.has("name") ? _c("span", {
-    staticClass: "text-danger"
-  }, [_vm._v(_vm._s(_vm.errors.first("name")))]) : _vm._e()])])])], 1);
+  })])])])], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2571,6 +2569,21 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {};
   },
+  watch: {
+    'errors': {
+      handler: function handler(eachError, oldVal) {
+        var _this = this;
+        $(".validation_error").remove();
+        $(".is-invalid").removeClass('is-invalid');
+        $.each(eachError.items, function (index, eachField) {
+          var target = $("[name='" + eachField.field + "']");
+          $(target).parent().append("<span class='validation_error'>" + eachField.msg + "</span>");
+          $(target).addClass('is-invalid');
+        });
+      },
+      deep: true
+    }
+  },
   methods: {
     openModal: function openModal() {
       var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'myModal';
@@ -2677,7 +2690,7 @@ __webpack_require__.r(__webpack_exports__);
               _this.$toast.success("Data Update successfully!");
             })["catch"](function (error) {
               console.error('Error updating category:', error);
-              _this.$toast.error("Data Updateing Unsuccessfully!");
+              _this.$toast.error("Data Updating Unsuccessfully!");
             });
           } else {
             axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(_this.urlGenaretor(), fromData).then(function (res) {
@@ -2693,18 +2706,20 @@ __webpack_require__.r(__webpack_exports__);
                 }
                 _this.$toast.success("Data Added successfully!");
               } else if (parseInt(res.data.status) === 3000) {
-                console.log(res.data.result);
+                $.each(res.data.result, function (index, errorValue) {
+                  _this.$validator.errors.add({
+                    id: index,
+                    field: index,
+                    name: index,
+                    msg: errorValue[0]
+                  });
+                });
               } else {
-                console.log("Unexpected status code");
+                console.log('toster');
               }
-            })["catch"](function (error) {
-              _this.handleValidationError(error);
             });
           }
         }
-      })["catch"](function (error) {
-        console.error('Validation failed:', error);
-        _this.$toast.error('Validation Failed');
       });
     },
     handleValidationError: function handleValidationError(error) {

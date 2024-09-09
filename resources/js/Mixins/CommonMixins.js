@@ -4,6 +4,22 @@ export default {
     data(){
         return{
 
+
+        }
+    },
+    watch: {
+        'errors': {
+            handler: function (eachError, oldVal) {
+                const _this = this;
+                $(".validation_error").remove();
+                $(".is-invalid").removeClass('is-invalid');
+                $.each(eachError.items, function (index, eachField){
+                    var target = $("[name='" + eachField.field + "']");
+                    $(target).parent().append("<span class='validation_error'>"+eachField.msg+"</span>")
+                    $(target).addClass('is-invalid');
+                });
+            },
+            deep: true
         }
     },
     methods : {

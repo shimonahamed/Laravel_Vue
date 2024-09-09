@@ -32,7 +32,7 @@
                         type="text"
                     />
 <!--                    <span>{{ errors.first('name') }}</span>-->
-                    <span v-if="errors.has('name')" class="text-danger">{{ errors.first('name') }}</span>
+<!--                    <span v-if="errors.has('name')" class="text-danger">{{ errors.first('name') }}</span>-->
              </div>
             </div>
         </data-modal>

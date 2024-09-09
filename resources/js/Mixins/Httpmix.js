@@ -30,27 +30,21 @@ export default {
 
 
 
-            submitFromData: function (fromData = {}, optParms = {}, callback) {
+        submitFromData: function (fromData = {}, optParms = {}, callback) {
             const _this = this;
 
-
             _this.$validator.validateAll().then((valid) => {
-
                 if (valid) {
-
                     if (_this.fromData.id) {
-
                         axios.put(`${_this.urlGenaretor()}/${_this.fromData.id}`, _this.fromData)
                             .then(function (response) {
                                 _this.getDataList();
                                 _this.closeModal();
                                 _this.$toast.success("Data Update successfully!");
-
                             })
                             .catch(function (error) {
                                 console.error('Error updating category:', error);
-                                _this.$toast.error("Data Updateing Unsuccessfully!");
-
+                                _this.$toast.error("Data Updating Unsuccessfully!");
                             });
                     } else {
                         axios.post(_this.urlGenaretor(), fromData)
@@ -67,21 +61,23 @@ export default {
                                     }
                                     _this.$toast.success("Data Added successfully!");
                                 } else if (parseInt(res.data.status) === 3000) {
-                                    console.log(res.data.result);
+                                    $.each(res.data.result, function (index, errorValue) {
+                                        _this.$validator.errors.add({
+                                            id: index,
+                                            field: index,
+                                            name: index,
+                                            msg: errorValue[0],
+                                        });
+                                    });
                                 } else {
-                                    console.log("Unexpected status code");
+                                    console.log('toster');
                                 }
-                            })
-                            .catch(function (error) {
-                                _this.handleValidationError(error);
                             });
                     }
                 }
-            }).catch(function (error) {
-                console.error('Validation failed:', error);
-                _this.$toast.error('Validation Failed');
             });
         },
+
         handleValidationError: function (error) {
             if (error.response && error.response.data.result) {
                 const errors = error.response.data.result;
