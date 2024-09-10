@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\subCategory;
+use App\Supports\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class SubCategoryController extends Controller
 
 {
-    public $model='';
+   use Helper;
     public function  __construct()
     {
         $this->model=new subCategory();
@@ -19,7 +20,7 @@ class SubCategoryController extends Controller
     public function index()
     {
         $data=$this->model->get();
-        return response()->json(['result'=>$data,'status'=>2000],200);
+        return $this->returnData(2000,$data);
     }
 
 
@@ -39,7 +40,7 @@ class SubCategoryController extends Controller
         }
         $this->model->fill($request->all());
         $this->model->save();
-        return response()->json(['result' =>  $this->model, 'status' => 2000], 200);
+        return $this->returnData(2000, $this->model);
     }
 
 

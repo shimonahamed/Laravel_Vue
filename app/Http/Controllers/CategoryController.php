@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Supports\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
-    public $model='';
+
+    use Helper;
     public function  __construct()
     {
         $this->model=new Category();
@@ -17,7 +19,7 @@ class CategoryController extends Controller
     public function index()
     {
         $data=$this->model->get();
-        return response()->json(['result'=>$data,'status'=>2000],200);
+        return $this->returnData(2000,$data);
     }
 
 
@@ -37,7 +39,8 @@ class CategoryController extends Controller
         }
         $this->model->fill($request->all());
         $this->model->save();
-        return response()->json(['result' =>  $this->model, 'status' => 2000], 200);
+        return $this->returnData(2000,$this->model);
+
     }
 
 
@@ -83,10 +86,11 @@ class CategoryController extends Controller
             if ($category) {
 
                 $category->delete();
-                return response()->json(['status' => 2000]);
+                return $this->returnData(2000,null, 'Category deleted successfully');
             }
 
-            return response()->json(['status' => 3000]);
+            return $this->returnData(3000, null,'Category deleted Unsuccessfully');
+
         } catch (\Exception $e) {
             return response()->json(['result' => null, 'message' => $e->getMessage(), 'status' => 5000]);
         }

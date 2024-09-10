@@ -4,5 +4,14 @@ export const getters = {
     },
     fromData(state){
         return state.fromData;
+    },
+    updateId(state){
+        return state.updateId;
+    },
+    formType(state){
+        return state.formType;
+    },
+    requireData(state){
+        return state.requireData;
     }
 }

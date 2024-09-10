@@ -23,17 +23,24 @@ export default {
         }
     },
     methods : {
-        openModal : function (modalId = 'myModal',fromData={}){
+        openModal : function (modalId = false,fromData={},callback=false){
             const _this = this;
-            $(`#${modalId}`).modal('show');
+            let modal_id= modalId ? modalId : 'myModal';
+            $(`#${modal_id}`).modal('show');
             _this.$store.commit('fromData', fromData);
+
+            if (typeof callback == 'function'){
+                callback(true)
+            }
 
 
         },
         closeModal : function (modalId = 'myModal', fromData={}){
             const _this=this;
             $(`#${modalId}`).modal('hide');
-            _this.$store.commit('fromData',{})
+            _this.$store.commit('fromData', {});
+            _this.$store.commit('updateId', '');
+            _this.$store.commit('formType', 1);
         },
         urlGenaretor:function(customUrl = false){
             const _this=this;
@@ -44,12 +51,12 @@ export default {
             return `${baseUrl}/${_this.$route.meta.dataUrl}`
 
         },
-        openEditModal(category) {
+        openEditModal(data,id) {
 
-            let cat = Object.assign({}, category);
-            this.$store.commit('fromData', cat);
+            this.$store.commit('updateId', id);
+            this.$store.commit('formType', 1);
 
-            this.openModal('myModal', this.fromData)
+            this.openModal(false, data)
 
         },
 
@@ -78,6 +85,15 @@ export default {
         },
         dataList(){
             return this.$store.state.dataList;
+        },
+        requireData(){
+            return this.$store.state.requireData;
+        },
+        updateId(){
+            return this.$store.state.updateId;
+        },
+        formType(){
+            return this.$store.state.formType;
         }
 
     }

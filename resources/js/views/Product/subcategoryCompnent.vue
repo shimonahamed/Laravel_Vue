@@ -8,7 +8,6 @@
                 <tr v-for="(data, index) in dataList">
                     <td>{{ index + 1 }}</td>
                     <td>{{ data.name }}</td>
-                    <td>{{ getCategoryName(data.category_id) }}</td>
                     <td>
                         <a @click="openEditModal(data)"
                             ><i class="fas fa-edit"></i
@@ -30,18 +29,16 @@
                         type="text"
                         name="name"
                     />
-                    <span v-if="errors.has('name')" class="text-danger">{{ errors.first(result.name) }}</span>
 
                 </div>
                 <div class="col-md-12">
                     <label> Category</label>
                     <select v-model="fromData.category_id" name="category_id" class="form-control">
-                        <option value="Select Category">Select Category</option>
-                        <option v-for="category in categories" :key="category.id" :value="category.id">
-                            {{ category.name }}
-                        </option>
+                        <template v-for="(item , index) in requireData.category">
+                            <option :value="item.id">{{item.name}}</option>
+
+                        </template>
                     </select>
-                    <span v-if="errors.has('category_id')" class="text-danger">{{ errors.first('category_id') }}</span>
 
                 </div>
             </div>
@@ -61,25 +58,24 @@ export default {
     data() {
         return {
             tableHeading: ["SL", "Name", "Category", "Action"],
-            categories: [],
         };
     },
     mounted() {
         this.getDataList();
-        this.getCategories();
+        this.getRequiredData(['category']);
     },
     methods: {
-        getCategoryName(category_id) {
-            const category = this.categories.find(cat => cat.id === category_id);
-            return category ? category.name : '';
-        },
-        getCategories() {
-            axios.get('/api/categories')
-                .then(response => {
-                this.categories = response.data.result;
-            });
-        },
-    },
+    //     getCategoryName(category_id) {
+    //         const category = this.categories.find(cat => cat.id === category_id);
+    //         return category ? category.name : '';
+    //     },
+    //     getCategories() {
+    //         axios.get('/api/categories')
+    //             .then(response => {
+    //             this.categories = response.data.result;
+    //         });
+    //     },
+     },
 };
 </script>
 

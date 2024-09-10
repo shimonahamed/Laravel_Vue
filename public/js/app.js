@@ -271,7 +271,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _compnents_pageTop__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../compnents/pageTop */ "./resources/js/compnents/pageTop.vue");
 /* harmony import */ var _compnents_dataTable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../compnents/dataTable */ "./resources/js/compnents/dataTable.vue");
 /* harmony import */ var _compnents_dataModal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../compnents/dataModal */ "./resources/js/compnents/dataModal.vue");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 
 
 
@@ -285,27 +284,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      tableHeading: ["SL", "Name", "Category", "Action"],
-      categories: []
+      tableHeading: ["SL", "Name", "Category", "Action"]
     };
   },
   mounted: function mounted() {
     this.getDataList();
-    this.getCategories();
+    this.getRequiredData(['category']);
   },
   methods: {
-    getCategoryName: function getCategoryName(category_id) {
-      var category = this.categories.find(function (cat) {
-        return cat.id === category_id;
-      });
-      return category ? category.name : '';
-    },
-    getCategories: function getCategories() {
-      var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get('/api/categories').then(function (response) {
-        _this.categories = response.data.result;
-      });
-    }
+    //     getCategoryName(category_id) {
+    //         const category = this.categories.find(cat => cat.id === category_id);
+    //         return category ? category.name : '';
+    //     },
+    //     getCategories() {
+    //         axios.get('/api/categories')
+    //             .then(response => {
+    //             this.categories = response.data.result;
+    //         });
+    //     },
   }
 });
 
@@ -2458,7 +2454,7 @@ var render = function render() {
       tableHeading: _vm.tableHeading
     }
   }, _vm._l(_vm.dataList, function (data, index) {
-    return _c("tr", [_c("td", [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(_vm.getCategoryName(data.category_id)))]), _vm._v(" "), _c("td", [_c("a", {
+    return _c("tr", [_c("td", [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(data.name))]), _vm._v(" "), _c("td", [_c("a", {
       on: {
         click: function click($event) {
           return _vm.openEditModal(data);
@@ -2506,9 +2502,7 @@ var render = function render() {
         _vm.$set(_vm.fromData, "name", $event.target.value);
       }
     }
-  }), _vm._v(" "), _vm.errors.has("name") ? _c("span", {
-    staticClass: "text-danger"
-  }, [_vm._v(_vm._s(_vm.errors.first(_vm.result.name)))]) : _vm._e()]), _vm._v(" "), _c("div", {
+  })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", [_vm._v(" Category")]), _vm._v(" "), _c("select", {
     directives: [{
@@ -2532,20 +2526,13 @@ var render = function render() {
         _vm.$set(_vm.fromData, "category_id", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
-  }, [_c("option", {
-    attrs: {
-      value: "Select Category"
-    }
-  }, [_vm._v("Select Category")]), _vm._v(" "), _vm._l(_vm.categories, function (category) {
-    return _c("option", {
-      key: category.id,
+  }, [_vm._l(_vm.requireData.category, function (item, index) {
+    return [_c("option", {
       domProps: {
-        value: category.id
+        value: item.id
       }
-    }, [_vm._v("\n                        " + _vm._s(category.name) + "\n                    ")]);
-  })], 2), _vm._v(" "), _vm.errors.has("category_id") ? _c("span", {
-    staticClass: "text-danger"
-  }, [_vm._v(_vm._s(_vm.errors.first("category_id")))]) : _vm._e()])])])], 1);
+    }, [_vm._v(_vm._s(item.name))])];
+  })], 2)])])])], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2586,11 +2573,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     openModal: function openModal() {
-      var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'myModal';
+      var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var fromData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var _this = this;
-      $("#".concat(modalId)).modal('show');
+      var modal_id = modalId ? modalId : 'myModal';
+      $("#".concat(modal_id)).modal('show');
       _this.$store.commit('fromData', fromData);
+      if (typeof callback == 'function') {
+        callback(true);
+      }
     },
     closeModal: function closeModal() {
       var modalId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'myModal';
@@ -2598,6 +2590,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
       $("#".concat(modalId)).modal('hide');
       _this.$store.commit('fromData', {});
+      _this.$store.commit('updateId', '');
+      _this.$store.commit('formType', 1);
     },
     urlGenaretor: function urlGenaretor() {
       var customUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
@@ -2607,10 +2601,10 @@ __webpack_require__.r(__webpack_exports__);
       }
       return "".concat(baseUrl, "/").concat(_this.$route.meta.dataUrl);
     },
-    openEditModal: function openEditModal(category) {
-      var cat = Object.assign({}, category);
-      this.$store.commit('fromData', cat);
-      this.openModal('myModal', this.fromData);
+    openEditModal: function openEditModal(data, id) {
+      this.$store.commit('updateId', id);
+      this.$store.commit('formType', 1);
+      this.openModal(false, data);
     },
     DeleteToster: function DeleteToster() {
       Swal.fire({
@@ -2632,6 +2626,15 @@ __webpack_require__.r(__webpack_exports__);
     },
     dataList: function dataList() {
       return this.$store.state.dataList;
+    },
+    requireData: function requireData() {
+      return this.$store.state.requireData;
+    },
+    updateId: function updateId() {
+      return this.$store.state.updateId;
+    },
+    formType: function formType() {
+      return this.$store.state.formType;
     }
   }
 });
@@ -2642,117 +2645,9 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************!*\
   !*** ./resources/js/Mixins/Httpmix.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
-/* harmony import */ var vue_toastification__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-toastification */ "./node_modules/vue-toastification/dist/esm/index.js");
-
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {};
-  },
-  // watch: {
-  //     'fromData.name': function (newVal) {
-  //         this.validateField('name');
-  //     }
-  // },
-
-  methods: {
-    getDataList: function getDataList() {
-      var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get(_this.urlGenaretor()).then(function (response) {
-        _this.$store.commit("dataList", response.data.result);
-      });
-    },
-    validateField: function validateField(field) {
-      this.$validator.validate(field, this.fromData[field]);
-    },
-    submitFromData: function submitFromData() {
-      var fromData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var optParms = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var callback = arguments.length > 2 ? arguments[2] : undefined;
-      var _this = this;
-      _this.$validator.validateAll().then(function (valid) {
-        if (valid) {
-          if (_this.fromData.id) {
-            axios__WEBPACK_IMPORTED_MODULE_2__["default"].put("".concat(_this.urlGenaretor(), "/").concat(_this.fromData.id), _this.fromData).then(function (response) {
-              _this.getDataList();
-              _this.closeModal();
-              _this.$toast.success("Data Update successfully!");
-            })["catch"](function (error) {
-              console.error('Error updating category:', error);
-              _this.$toast.error("Data Updating Unsuccessfully!");
-            });
-          } else {
-            axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(_this.urlGenaretor(), fromData).then(function (res) {
-              if (parseInt(res.data.status) === 2000) {
-                if (optParms.modalForm === undefined) {
-                  _this.closeModal();
-                }
-                if (optParms.reloadList === undefined) {
-                  _this.getDataList();
-                }
-                if (typeof callback === "function") {
-                  callback(res.data.result);
-                }
-                _this.$toast.success("Data Added successfully!");
-              } else if (parseInt(res.data.status) === 3000) {
-                $.each(res.data.result, function (index, errorValue) {
-                  _this.$validator.errors.add({
-                    id: index,
-                    field: index,
-                    name: index,
-                    msg: errorValue[0]
-                  });
-                });
-              } else {
-                console.log('toster');
-              }
-            });
-          }
-        }
-      });
-    },
-    handleValidationError: function handleValidationError(error) {
-      var _this2 = this;
-      if (error.response && error.response.data.result) {
-        var errors = error.response.data.result;
-        console.log(errors);
-        Object.keys(errors).forEach(function (key) {
-          errors[key].forEach(function (message) {
-            _this2.$validator.errors.add({
-              field: key,
-              msg: message
-            });
-          });
-        });
-        this.$toast.error('Validation Failed');
-      } else {
-        console.error('Error:', error);
-        this.$toast.error('An unexpected error occurred.');
-      }
-    },
-    CategoryDatadelete: function CategoryDatadelete(data) {
-      var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"]["delete"]("".concat(_this.urlGenaretor(), "/").concat(data.id)).then(function (response) {
-        _this.getDataList();
-        _this.$toast.success("Data Delete successfully!");
-      })["catch"](function (error) {
-        console.error("Error deleting category:", error);
-        _this.$toast.error("Data Delete Unsuccessfully!");
-      });
-    }
-  }
-});
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /var/www/html/Laravel_Vue_Ecom/resources/js/Mixins/Httpmix.js: Unexpected token (102:21)\n\n\u001b[0m \u001b[90m 100 |\u001b[39m                                 _this\u001b[33m.\u001b[39m$toast\u001b[33m.\u001b[39merror(\u001b[32m\"Data submission unsuccessful!\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 101 |\u001b[39m                             })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 102 |\u001b[39m                     }\u001b[33m,\u001b[39m\n \u001b[90m     |\u001b[39m                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 103 |\u001b[39m\n \u001b[90m 104 |\u001b[39m\n \u001b[90m 105 |\u001b[39m         \u001b[33mCategoryDatadelete\u001b[39m(data)\u001b[0m\n    at constructor (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:362:19)\n    at Parser.raise (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:3260:19)\n    at Parser.unexpected (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:3280:16)\n    at Parser.parseExprAtom (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10968:16)\n    at Parser.parseExprSubscripts (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10584:23)\n    at Parser.parseUpdate (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10569:21)\n    at Parser.parseMaybeUnary (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10549:23)\n    at Parser.parseMaybeUnaryOrPrivate (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10403:61)\n    at Parser.parseExprOps (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10408:23)\n    at Parser.parseMaybeConditional (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10385:23)\n    at Parser.parseMaybeAssign (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10348:21)\n    at Parser.parseExpressionBase (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10302:23)\n    at /var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10298:39\n    at Parser.allowInAnd (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11928:16)\n    at Parser.parseExpression (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10298:17)\n    at Parser.parseStatementContent (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:12372:23)\n    at Parser.parseStatementLike (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:12239:17)\n    at Parser.parseStatementListItem (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:12219:17)\n    at Parser.parseBlockOrModuleBlockBody (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:12792:61)\n    at Parser.parseBlockBody (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:12785:10)\n    at Parser.parseBlock (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:12773:10)\n    at Parser.parseFunctionBody (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11618:24)\n    at Parser.parseArrowExpression (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11593:10)\n    at Parser.parseParenAndDistinguishExpression (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11207:12)\n    at Parser.parseExprAtom (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10851:23)\n    at Parser.parseExprSubscripts (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10584:23)\n    at Parser.parseUpdate (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10569:21)\n    at Parser.parseMaybeUnary (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10549:23)\n    at Parser.parseMaybeUnaryOrPrivate (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10403:61)\n    at Parser.parseExprOps (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10408:23)\n    at Parser.parseMaybeConditional (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10385:23)\n    at Parser.parseMaybeAssign (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10348:21)\n    at /var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10318:39\n    at Parser.allowInAnd (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11933:12)\n    at Parser.parseMaybeAssignAllowIn (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10318:17)\n    at Parser.parseExprListItem (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11693:18)\n    at Parser.parseCallExpressionArguments (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10770:22)\n    at Parser.parseCoverCallAndAsyncArrowHead (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10687:29)\n    at Parser.parseSubscript (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10624:19)\n    at Parser.parseSubscripts (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10597:19)\n    at Parser.parseExprSubscripts (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10588:17)\n    at Parser.parseUpdate (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10569:21)\n    at Parser.parseMaybeUnary (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10549:23)\n    at Parser.parseMaybeUnaryOrPrivate (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10403:61)\n    at Parser.parseExprOps (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10408:23)\n    at Parser.parseMaybeConditional (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10385:23)\n    at Parser.parseMaybeAssign (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10348:21)\n    at Parser.parseExpressionBase (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10302:23)\n    at /var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:10298:39\n    at Parser.allowInAnd (/var/www/html/Laravel_Vue_Ecom/node_modules/@babel/parser/lib/index.js:11928:16)");
 
 /***/ }),
 
@@ -2898,6 +2793,15 @@ var getters = {
   },
   fromData: function fromData(state) {
     return state.fromData;
+  },
+  updateId: function updateId(state) {
+    return state.updateId;
+  },
+  formType: function formType(state) {
+    return state.formType;
+  },
+  requireData: function requireData(state) {
+    return state.requireData;
   }
 };
 
@@ -2948,6 +2852,15 @@ var mutations = {
   },
   fromData: function fromData(state, data) {
     state.fromData = data;
+  },
+  updateId: function updateId(state, data) {
+    state.updateId = data;
+  },
+  formType: function formType(state, data) {
+    state.formType = data;
+  },
+  requireData: function requireData(state, data) {
+    state.requireData = data;
   }
 };
 
@@ -2965,8 +2878,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   state: () => (/* binding */ state)
 /* harmony export */ });
 var state = {
+  requireData: [],
   dataList: {},
-  fromData: {}
+  fromData: {},
+  updateId: '',
+  formType: 1
 };
 
 /***/ }),
