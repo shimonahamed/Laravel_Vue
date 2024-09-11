@@ -11,16 +11,17 @@ use Illuminate\Support\Facades\Validator;
 class SubCategoryController extends Controller
 
 {
-   use Helper;
-    public function  __construct()
+    use Helper;
+
+    public function __construct()
     {
-        $this->model=new subCategory();
+        $this->model = new subCategory();
     }
 
     public function index()
     {
-        $data=$this->model->get();
-        return $this->returnData(2000,$data);
+        $data = $this->model->get();
+        return $this->returnData(2000, $data);
     }
 
 
@@ -32,10 +33,8 @@ class SubCategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required ',
-        ]);
-        if ($validator->fails()){
+        $validator = $this->model->Validator($request->all());
+        if ($validator->fails()) {
             return response()->json(['result' => $validator->errors(), 'status' => 3000], 200);
         }
         $this->model->fill($request->all());
@@ -49,49 +48,50 @@ class SubCategoryController extends Controller
 
     }
 
-
     public function edit(Category $category)
     {
 
     }
 
-
     public function update(Request $request)
     {
 
         try {
-            $id = $request->input('id');
-
-            $category =$this->model->where('id', $id)->first();
-
-            if ($category) {
-                $category->name = $request->input('name');
-                $category->update();
-
-                return response()->json(['status' => 2000]);
+            $validator = $this->model->Validator($request->all());
+            if ($validator->fails()) {
+                return response()->json(['result' => $validator->errors(), 'status' => 3000], 200);
             }
 
-            return response()->json(['status' => 3000]);
+
+            $category = $this->model->where('id', $request->input('id'))->first();
+
+            if ($category) {
+                $category->fill($request->all());
+                $category->save();
+                return $this->returnData(2000, $category);
+
+            }
+
+            return $this->returnData(3000, null, 'Category not found');
         } catch (\Exception $e) {
             return response()->json(['result' => null, 'message' => $e->getMessage(), 'status' => 5000]);
         }
     }
 
 
-    public function destroy($id)
+    public function destroy($category_id)
     {
         try {
-            $category = $this->model->where('id', $id)->first();
+            $data = $this->model->where('id',$category_id)->first();
+            if ($data){
+                $data->delete();
 
-            if ($category) {
-
-                $category->delete();
-                return response()->json(['status' => 2000]);
+                return $this->returnData(2000, null, 'Category deleted successfully');
             }
+            return $this->returnData(3000, null, 'Category not found');
 
-            return response()->json(['status' => 3000]);
-        } catch (\Exception $e) {
-            return response()->json(['result' => null, 'message' => $e->getMessage(), 'status' => 5000]);
+        }catch (\Exception $exception){
+            return $this->returnData(5000, $exception->getMessage(), 'Something Wrong');
         }
     }
 }

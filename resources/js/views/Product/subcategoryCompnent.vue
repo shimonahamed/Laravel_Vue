@@ -9,12 +9,12 @@
                     <td>{{ index + 1 }}</td>
                     <td>{{ data.name }}</td>
                     <td>
-                        <a @click="openEditModal(data)"
-                            ><i class="fas fa-edit"></i
-                        ></a>
-                        <a @click="CategoryDatadelete(data)"
-                            ><i class="fas fa-trash-alt"></i
-                        ></a>
+                        <a @click="openEditModal(data, data.id)">
+                            <i class="fas fa-edit" style="color: blue;"></i>
+                        </a>
+                        <a @click="CategoryDatadelete(data.id,index)">
+                            <i class="fas fa-trash-alt" style="color: red;"></i>
+                        </a>
                     </td>
                 </tr>
             </data-table>
@@ -24,10 +24,10 @@
                 <div class="col-md-12">
                     <label> Name</label>
                     <input
-                        v-model="fromData.name"
-                        class="form-control"
-                        type="text"
-                        name="name"
+                            v-model="fromData.name"
+                            class="form-control"
+                            type="text"
+                            name="name"
                     />
 
                 </div>
@@ -47,36 +47,27 @@
 </template>
 
 <script>
-import PageTop from "../../compnents/pageTop";
-import DataTable from "../../compnents/dataTable";
-import DataModal from "../../compnents/dataModal";
-import axios from "axios";
+    import PageTop from "../../compnents/pageTop";
+    import DataTable from "../../compnents/dataTable";
+    import DataModal from "../../compnents/dataModal";
+    import axios from "axios";
 
-export default {
-    name: "subcategoryCompnent",
-    components: { DataModal, DataTable, PageTop },
-    data() {
-        return {
-            tableHeading: ["SL", "Name", "Category", "Action"],
-        };
-    },
-    mounted() {
-        this.getDataList();
-        this.getRequiredData(['category']);
-    },
-    methods: {
-    //     getCategoryName(category_id) {
-    //         const category = this.categories.find(cat => cat.id === category_id);
-    //         return category ? category.name : '';
-    //     },
-    //     getCategories() {
-    //         axios.get('/api/categories')
-    //             .then(response => {
-    //             this.categories = response.data.result;
-    //         });
-    //     },
-     },
-};
+    export default {
+        name: "subcategoryCompnent",
+        components: {DataModal, DataTable, PageTop},
+        data() {
+            return {
+                tableHeading: ["SL", "Name", "Action"],
+            };
+        },
+        mounted() {
+            this.getDataList();
+            this.getRequiredData(['category']);
+        },
+        methods: {
+
+        },
+    };
 </script>
 
 <style scoped></style>

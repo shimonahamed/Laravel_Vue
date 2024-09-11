@@ -6,7 +6,6 @@ Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login'
 Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'doLogin']);
 
 
-
 Route::view('admin/{any}', 'singleApp')->where('any', '.*')->middleware('auth');
 
 

@@ -9,12 +9,12 @@
                     <td>{{ index + 1 }}</td>
                     <td>{{ data.name }}</td>
                     <td>
-                        <a @click="openEditModal(data)"
-                            ><i class="fas fa-edit"></i
-                        ></a>
-                        <a @click="CategoryDatadelete(data)"
-                            ><i class="fas fa-trash-alt"></i
-                        ></a>
+                        <a @click="openEditModal(data , data.id)">
+                            <i class="fas fa-edit" style="color: blue;"></i>
+                        </a>
+                        <a @click="CategoryDatadelete(data.id, index)">
+                            <i class="fas fa-trash-alt" style="color: red;"></i>
+                        </a>
                     </td>
                 </tr>
             </data-table>
@@ -25,42 +25,45 @@
                     <label>Category Name</label>
 
                     <input
-                        v-validate="'required'"
-                        v-model="fromData.name"
-                        class="form-control"
-                        name="name"
-                        type="text"
+                            v-validate="'required'"
+                            v-model="fromData.name"
+                            class="form-control"
+                            name="name"
+                            type="text"
                     />
-<!--                    <span>{{ errors.first('name') }}</span>-->
-<!--                    <span v-if="errors.has('name')" class="text-danger">{{ errors.first('name') }}</span>-->
-             </div>
+                </div>
             </div>
         </data-modal>
     </div>
 </template>
 
 <script>
-import PageTop from "../../compnents/pageTop";
-import DataTable from "../../compnents/dataTable";
-import axios from "axios";
-import DataModal from "../../compnents/dataModal";
-export default {
-    name: "categoryCompnent",
-    components: { DataModal, DataTable, PageTop },
-    data() {
-        return {
-            tableHeading: ["Sl", "name", "Action"],
+    import PageTop from "../../compnents/pageTop";
+    import DataTable from "../../compnents/dataTable";
+    import axios from "axios";
+    import DataModal from "../../compnents/dataModal";
 
-        };
-    },
-    mounted() {
-        this.getDataList();
-        this.$set(this.fromData, "name", "");
-    },
-    computed:{
+    export default {
+        name: "categoryCompnent",
+        components: {DataModal, DataTable, PageTop},
+        data() {
+            return {
+                tableHeading: ["Sl", "name", "Action"],
 
-    }
-};
+            };
+        },
+        mounted() {
+            this.getDataList();
+            this.$set(this.fromData, "name", "");
+        },
+        computed: {}
+    };
 </script>
+.trash-icon {
+color: red;
+}
+.edit-icon {
+color: blue;
+}
 
 <style scoped></style>

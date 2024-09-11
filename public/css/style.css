@@ -174,3 +174,6 @@ form .signup-link a:hover{
 .wrapper form .btn {
     margin-top: 20px; /* Adds space above the button */
 }
+.validation_error {
+    color: red;
+}

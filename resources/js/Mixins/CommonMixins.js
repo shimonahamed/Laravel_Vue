@@ -1,11 +1,8 @@
 import axios from "axios";
 
 export default {
-    data(){
-        return{
-
-
-        }
+    data() {
+        return {}
     },
     watch: {
         'errors': {
@@ -13,59 +10,62 @@ export default {
                 const _this = this;
                 $(".validation_error").remove();
                 $(".is-invalid").removeClass('is-invalid');
-                $.each(eachError.items, function (index, eachField){
+                $.each(eachError.items, function (index, eachField) {
                     var target = $("[name='" + eachField.field + "']");
-                    $(target).parent().append("<span class='validation_error'>"+eachField.msg+"</span>")
+                    $(target).parent().append("<span class='validation_error'>" + eachField.msg + "</span>")
                     $(target).addClass('is-invalid');
                 });
             },
             deep: true
         }
     },
-    methods : {
-        openModal : function (modalId = false,fromData={},callback=false){
+    methods: {
+        openModal: function (modalId = false, fromData = {}, callback = false) {
             const _this = this;
-            let modal_id= modalId ? modalId : 'myModal';
+            let modal_id = modalId ? modalId : 'myModal';
             $(`#${modal_id}`).modal('show');
             _this.$store.commit('fromData', fromData);
 
-            if (typeof callback == 'function'){
+            if (typeof callback == 'function') {
                 callback(true)
             }
 
 
         },
-        closeModal : function (modalId = 'myModal', fromData={}){
-            const _this=this;
+        closeModal: function (modalId = 'myModal', fromData = {}) {
+            const _this = this;
             $(`#${modalId}`).modal('hide');
             _this.$store.commit('fromData', {});
             _this.$store.commit('updateId', '');
             _this.$store.commit('formType', 1);
         },
-        urlGenaretor:function(customUrl = false){
-            const _this=this;
-            if (customUrl){
+        urlGenaretor: function (customUrl = false) {
+            const _this = this;
+            if (customUrl) {
                 return `${baseUrl}/${customUrl}`;
 
             }
             return `${baseUrl}/${_this.$route.meta.dataUrl}`
 
         },
-        openEditModal(data,id) {
+        openEditModal(data, id) {
 
             this.$store.commit('updateId', id);
-            this.$store.commit('formType', 1);
+            this.$store.commit('formType', 2);
 
             this.openModal(false, data)
 
         },
 
 
-        DeleteToster:function () {
+        DeleteToster: function (callback=false,confirmMessage=null,confirmTitle=null) {
+            const _this=this;
+            let message=confirmMessage ? confirmMessage : "You won't be able to revert this!";
+            let title = confirmTitle ?? "Are you sure?";
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+            _this.$swal.fire({
+                title: title,
+                text: message,
                 icon: 'warning',
                 showCancelButton: true,
                 isConfirmed:true,
@@ -73,26 +73,33 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!',
                 cancelButtonText: 'Cancel'
-            })
+
+
+        }).then((result)=>{
+                if(typeof callback === 'function'){
+                    callback (result.isConfirmed)
+
+                }
+            });
 
         }
     },
 
 
-    computed :{
-        fromData(){
+    computed: {
+        fromData() {
             return this.$store.state.fromData;
         },
-        dataList(){
+        dataList() {
             return this.$store.state.dataList;
         },
-        requireData(){
+        requireData() {
             return this.$store.state.requireData;
         },
-        updateId(){
+        updateId() {
             return this.$store.state.updateId;
         },
-        formType(){
+        formType() {
             return this.$store.state.formType;
         }
 
