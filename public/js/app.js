@@ -130,7 +130,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "sideMenu",
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    this.getconfigurations();
+  },
+  methods: {
+    getconfigurations: function getconfigurations() {
+      var _this = this;
+      var url = _this.urlGenaretor('api/configurations');
+      _this.httpReq('get', url, {}, {}, function (retData) {
+        _this.$store.commit('Config', retData.result);
+        _this.$store.commit('permissions', retData.result.permissions);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -562,35 +574,34 @@ var render = function render() {
     staticClass: "nav nav-secondary"
   }, [_vm._m(1), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4), _vm._v(" "), _vm._m(5), _vm._v(" "), _vm._m(6), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
-  }, [_vm._m(7), _vm._v(" "), _c("div", {
-    staticClass: "collapse",
-    attrs: {
-      id: "tables2"
-    }
-  }, [_c("ul", {
-    staticClass: "nav nav-collapse"
-  }, [_c("li", [_c("router-link", {
-    staticClass: "nav-link",
-    attrs: {
-      to: "/admin/product/category"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-th-list"
-  }), _vm._v("Category")])], 1), _vm._v(" "), _c("li", [_c("router-link", {
-    staticClass: "nav-link",
-    attrs: {
-      to: "/admin/product/sub_category"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-cogs"
-  }), _vm._v("SubCategory")])], 1), _vm._v(" "), _c("li", [_c("router-link", {
-    staticClass: "nav-link",
-    attrs: {
-      to: "/admin/product/product"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-cube"
-  }), _vm._v(" Product")])], 1)])])]), _vm._v(" "), _vm._m(8), _vm._v(" "), _vm._m(9), _vm._v(" "), _vm._m(10), _vm._v(" "), _vm._m(11), _vm._v(" "), _vm._m(12)])])])]);
+  }, [_vm._l(_vm.Config.menus, function (menu, mindex) {
+    return [menu.sub_menus.length > 0 ? [_c("a", {
+      attrs: {
+        "data-bs-toggle": "collapse",
+        href: "#tables2"
+      }
+    }, [_c("i", {
+      staticClass: "fas fa-tags"
+    }), _vm._v(" "), _c("p", [_vm._v(_vm._s(menu.name))]), _vm._v(" "), _c("span", {
+      staticClass: "caret"
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "collapse",
+      attrs: {
+        id: "tables2"
+      }
+    }, [_c("ul", {
+      staticClass: "nav nav-collapse"
+    }, [_c("li", [_vm._l(menu.sub_menus, function (subMenu, sindex) {
+      return [_c("router-link", {
+        staticClass: "nav-link",
+        attrs: {
+          to: subMenu.link
+        }
+      }, [_c("i", {
+        staticClass: "fas fa-th-list"
+      }), _vm._v(_vm._s(subMenu.name))])];
+    })], 2)])])] : _vm._e()];
+  })], 2), _vm._v(" "), _vm._m(7), _vm._v(" "), _vm._m(8)])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -846,19 +857,6 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("a", {
-    attrs: {
-      "data-bs-toggle": "collapse",
-      href: "#tables2"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-tags"
-  }), _vm._v(" "), _c("p", [_vm._v("Category")]), _vm._v(" "), _c("span", {
-    staticClass: "caret"
-  })]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
   return _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
@@ -924,112 +922,6 @@ var staticRenderFns = [function () {
   }, [_c("span", {
     staticClass: "sub-item"
   }, [_vm._v("Sparkline")])])])])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    attrs: {
-      href: "widgets.html"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-desktop"
-  }), _vm._v(" "), _c("p", [_vm._v("Widgets")]), _vm._v(" "), _c("span", {
-    staticClass: "badge badge-success"
-  }, [_vm._v("4")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    attrs: {
-      href: "../../documentation/index.html"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-file"
-  }), _vm._v(" "), _c("p", [_vm._v("Documentation")]), _vm._v(" "), _c("span", {
-    staticClass: "badge badge-secondary"
-  }, [_vm._v("1")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    attrs: {
-      "data-bs-toggle": "collapse",
-      href: "#submenu"
-    }
-  }, [_c("i", {
-    staticClass: "fas fa-bars"
-  }), _vm._v(" "), _c("p", [_vm._v("Menu Levels")]), _vm._v(" "), _c("span", {
-    staticClass: "caret"
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "collapse",
-    attrs: {
-      id: "submenu"
-    }
-  }, [_c("ul", {
-    staticClass: "nav nav-collapse"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      "data-bs-toggle": "collapse",
-      href: "#subnav1"
-    }
-  }, [_c("span", {
-    staticClass: "sub-item"
-  }, [_vm._v("Level 1")]), _vm._v(" "), _c("span", {
-    staticClass: "caret"
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "collapse",
-    attrs: {
-      id: "subnav1"
-    }
-  }, [_c("ul", {
-    staticClass: "nav nav-collapse subnav"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_c("span", {
-    staticClass: "sub-item"
-  }, [_vm._v("Level 2")])])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_c("span", {
-    staticClass: "sub-item"
-  }, [_vm._v("Level 2")])])])])])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      "data-bs-toggle": "collapse",
-      href: "#subnav2"
-    }
-  }, [_c("span", {
-    staticClass: "sub-item"
-  }, [_vm._v("Level 1")]), _vm._v(" "), _c("span", {
-    staticClass: "caret"
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "collapse",
-    attrs: {
-      id: "subnav2"
-    }
-  }, [_c("ul", {
-    staticClass: "nav nav-collapse subnav"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_c("span", {
-    staticClass: "sub-item"
-  }, [_vm._v("Level 2")])])])])])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_c("span", {
-    staticClass: "sub-item"
-  }, [_vm._v("Level 1")])])])])])]);
 }];
 render._withStripped = true;
 
@@ -2646,6 +2538,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     formType: function formType() {
       return this.$store.state.formType;
+    },
+    Config: function Config() {
+      return this.$store.state.Config;
+    },
+    permissions: function permissions() {
+      return this.$store.state.permissions;
     }
   }
 });
@@ -2763,22 +2661,6 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     }
-
-    // CategoryDatadelete(data) {
-    //     const _this = this;
-    //
-    //     axios.delete(`${_this.urlGenaretor()}/${data.id}`)
-    //
-    //         .then((response) => {
-    //             _this.getDataList();
-    //             _this.$toast.success("Data Delete successfully!");
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error deleting category:", error);
-    //             _this.$toast.error("Data Delete Unsuccessfully!");
-    //         });
-    //
-    // },
   }
 });
 
@@ -2966,6 +2848,12 @@ var getters = {
   },
   requireData: function requireData(state) {
     return state.requireData;
+  },
+  Config: function Config(state) {
+    return state.Config;
+  },
+  permissions: function permissions(state) {
+    return state.permissions;
   }
 };
 
@@ -3025,6 +2913,12 @@ var mutations = {
   },
   requireData: function requireData(state, data) {
     state.requireData = data;
+  },
+  Config: function Config(state, data) {
+    state.Config = data;
+  },
+  permissions: function permissions(state, data) {
+    state.permissions = data;
   }
 };
 
@@ -3046,7 +2940,9 @@ var state = {
   dataList: {},
   fromData: {},
   updateId: '',
-  formType: 1
+  formType: 1,
+  permissions: [],
+  Config: {}
 };
 
 /***/ }),

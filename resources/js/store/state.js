@@ -4,4 +4,6 @@ export const state= {
     fromData: {},
     updateId: '',
     formType: 1,
+    permissions: [],
+    Config: {},
 };

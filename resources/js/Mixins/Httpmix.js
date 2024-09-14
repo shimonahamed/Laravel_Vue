@@ -114,21 +114,7 @@ export default {
 
 
 
-        // CategoryDatadelete(data) {
-        //     const _this = this;
-        //
-        //     axios.delete(`${_this.urlGenaretor()}/${data.id}`)
-        //
-        //         .then((response) => {
-        //             _this.getDataList();
-        //             _this.$toast.success("Data Delete successfully!");
-        //         })
-        //         .catch((error) => {
-        //             console.error("Error deleting category:", error);
-        //             _this.$toast.error("Data Delete Unsuccessfully!");
-        //         });
-        //
-        // },
+
 
     },
 

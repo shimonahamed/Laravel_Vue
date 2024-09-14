@@ -101,6 +101,12 @@ export default {
         },
         formType() {
             return this.$store.state.formType;
+        },
+        Config(){
+            return this.$store.state.Config;
+        },
+        permissions(){
+            return this.$store.state.permissions;
         }
 
     }

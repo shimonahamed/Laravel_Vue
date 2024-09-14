@@ -188,27 +188,29 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#tables2">
-                            <i class="fas fa-tags"></i>
-                            <p>Category</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="tables2">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <router-link class="nav-link " to="/admin/product/category"><i class="fas fa-th-list"></i>Category</router-link>
+                        <template v-for="(menu ,mindex) in Config.menus">
+                            <template v-if="menu.sub_menus.length > 0">
+                                <a data-bs-toggle="collapse" href="#tables2">
+                                    <i class="fas fa-tags"></i>
+                                    <p>{{menu.name}}</p>
+                                    <span class="caret"></span>
+                                </a>
+                                <div class="collapse" id="tables2">
+                                    <ul class="nav nav-collapse">
+                                        <li>
+                                            <template v-for="(subMenu ,sindex) in menu.sub_menus">
+                                            <router-link class="nav-link " :to="subMenu.link"><i class="fas fa-th-list"></i>{{subMenu.name}}</router-link>
 
-                                </li>
-                                <li>
-                                    <router-link class="nav-link" to="/admin/product/sub_category">
-                                        <i class="fas fa-cogs"></i>SubCategory</router-link>
-                                </li>
-                                <li>
-                                    <router-link class="nav-link" to="/admin/product/product"><i class="fas fa-cube"></i> Product</router-link>
+                                            </template>
+                                        </li>
+                                    </ul>
+                                </div>
 
-                                </li>
-                            </ul>
-                        </div>
+
+                            </template>
+
+                        </template>
+
                     </li>
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#maps">
@@ -256,83 +258,7 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a href="widgets.html">
-                            <i class="fas fa-desktop"></i>
-                            <p>Widgets</p>
-                            <span class="badge badge-success">4</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="../../documentation/index.html">
-                            <i class="fas fa-file"></i>
-                            <p>Documentation</p>
-                            <span class="badge badge-secondary">1</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#submenu">
-                            <i class="fas fa-bars"></i>
-                            <p>Menu Levels</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="submenu">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <a
-                                        data-bs-toggle="collapse"
-                                        href="#subnav1"
-                                    >
-                                        <span class="sub-item">Level 1</span>
-                                        <span class="caret"></span>
-                                    </a>
-                                    <div class="collapse" id="subnav1">
-                                        <ul class="nav nav-collapse subnav">
-                                            <li>
-                                                <a href="#">
-                                                    <span class="sub-item"
-                                                        >Level 2</span
-                                                    >
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <span class="sub-item"
-                                                        >Level 2</span
-                                                    >
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a
-                                        data-bs-toggle="collapse"
-                                        href="#subnav2"
-                                    >
-                                        <span class="sub-item">Level 1</span>
-                                        <span class="caret"></span>
-                                    </a>
-                                    <div class="collapse" id="subnav2">
-                                        <ul class="nav nav-collapse subnav">
-                                            <li>
-                                                <a href="#">
-                                                    <span class="sub-item"
-                                                        >Level 2</span
-                                                    >
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="sub-item">Level 1</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+
                 </ul>
             </div>
         </div>
@@ -341,7 +267,23 @@
 <script>
 export default {
     name: "sideMenu",
-    mounted() {},
+    mounted() {
+        this.getconfigurations();
+    },
+    methods:{
+        getconfigurations:function () {
+            const _this=this;
+            const url=_this.urlGenaretor('api/configurations');
+            _this.httpReq('get',url,{},{},function (retData){
+                _this.$store.commit('Config',retData.result);
+                _this.$store.commit('permissions',retData.result.permissions);
+
+            })
+
+        }
+
+        }
+
 };
 </script>
 <style scoped></style>
