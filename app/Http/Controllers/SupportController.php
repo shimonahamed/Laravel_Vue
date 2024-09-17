@@ -39,7 +39,7 @@ class SupportController extends Controller
                 }]);
             }])->get();
 
-//        $data['permissions'] = $this->authPermissions();
+        $data['permissions'] = $this->authPermissions();
 
         return $this->returnData(2000, $data);
 
