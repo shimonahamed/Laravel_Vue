@@ -546,7 +546,7 @@ var render = function render() {
     staticClass: "fw-bold mb-3"
   }, [_vm._v(_vm._s(_vm.$route.meta.pagetitle))])]), _vm._v(" "), _c("div", {
     staticClass: "ms-md-auto py-2 py-md-0"
-  }, [_c("a", {
+  }, [_vm.permissions.includes("category_add") ? _c("a", {
     staticClass: "btn btn-primary btn-round",
     on: {
       click: function click($event) {
@@ -555,7 +555,7 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fas fa-plus"
-  }), _vm._v("Add")])])]);
+  }), _vm._v("Add")]) : _vm._e()])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2513,9 +2513,25 @@ var helper = function helper(store, router) {
     store.state.updateId = '';
     store.state.formType = 1;
     store.state.fromData = {};
+    // const Permissions = userPermissions();
+    // const requiredPermission = to.meta.requiredPermission;
+
+    // if ( requiredPermission) {
+    //     if ( Permissions.includes(requiredPermission)) {
+    //         next();
+    //     } else {
+    //         next('/not-authorized');
+    //     }
+    // } else {
+    //     next();
+    // }
     next(true);
   });
 };
+// function userPermissions() {
+//
+//     return [];
+// }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (helper);
 
 /***/ }),
@@ -2550,6 +2566,8 @@ var route = [{
   name: 'about',
   component: _views_About_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
 }, {
+  // v-if="permissions.includes('')"
+
   path: '/admin/product/category',
   name: 'category',
   component: _views_Product_categoryCompnent__WEBPACK_IMPORTED_MODULE_2__["default"],

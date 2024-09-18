@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('parent_id')->default(0);
             $table->string('link');
+            $table->string('icon');
             $table->integer('status')->default(1);
             $table->timestamps();
         });

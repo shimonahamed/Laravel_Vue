@@ -17,22 +17,29 @@ const route = [
         component : About
     },
     {
-        path : '/admin/product/category',
+        // v-if="permissions.includes('')"
+
+        path :  '/admin/product/category',
         name : 'category',
         component : categoryCompnent,
-        meta:{pagetitle:'Category',dataUrl:'api/categories'}
+        meta: {
+            pagetitle: 'Category',
+            dataUrl: 'api/categories',
+        }
     },
     {
         path : '/admin/product/sub_category',
         name : 'sub_category',
         component : subcategoryCompnent,
-        meta:{pagetitle:'Sub-Caategory',dataUrl:'api/subcategories'}
+        meta:{pagetitle:'Sub-Caategory',dataUrl:'api/subcategories',
+        }
 
     },{
         path : '/admin/product/product',
         name : 'product',
         component : product,
-        meta:{pagetitle:'Product Table',dataUrl:'api/product'}
+        meta:{pagetitle:'Product Table',dataUrl:'api/product',
+        }
 
     },
 ];
